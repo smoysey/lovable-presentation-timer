@@ -65,13 +65,20 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build Tauri app
+      - name: Build Tauri app (PR / branch — no release)
+        if: github.ref_type != 'tag'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Tauri app (tag — publish release)
+        if: github.ref_type == 'tag'
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v__VERSION__
-          releaseName: "Lovable Timer v__VERSION__"
+          tagName: ${{ github.ref_name }}
+          releaseName: "Lovable Timer ${{ github.ref_name }}"
           releaseBody: "Lovable-themed floating countdown timer for presentations. Linux build targets Ubuntu 24.04+ (libwebkit2gtk-4.1). See SIGNING.md for code-signing notes; Windows installers are currently unsigned."
           releaseDraft: false
           prerelease: false
