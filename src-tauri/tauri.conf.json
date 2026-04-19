@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Lovable Timer",
+  "version": "1.0.0",
+  "identifier": "com.lovable.timer",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:8080",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Lovable Timer",
+        "width": 160,
+        "height": 50,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "center": true,
+        "acceptFirstMouse": true,
+        "alwaysOnTop": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: asset: http://asset.localhost; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost; media-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "targets": ["deb", "appimage", "nsis"],
+    "linux": {
+      "deb": {
+        "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0"]
+      }
+    },
+    "longDescription": "A transparent floating presentation timer overlay",
+    "shortDescription": "Presentation Timer",
+    "copyright": "Copyright 2024",
+    "category": "Utility"
+  }
+}

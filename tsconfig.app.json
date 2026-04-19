@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "skipLibCheck": true,
+    "strict": false,
+    "target": "ES2020",
+    "types": [
+      "vitest/globals"
+    ],
+    "useDefineForClassFields": true
+  },
+  "include": [
+    "src/main.tsx",
+    "src/App.tsx",
+    "src/pages/Index.tsx",
+    "src/pages/NotFound.tsx",
+    "src/components/ErrorBoundary.tsx",
+    "src/components/MilestoneHeartOverlay.tsx",
+    "src/components/ui/button.tsx",
+    "src/lib/tauriWindow.ts",
+    "src/lib/utils.ts",
+    "src/vite-env.d.ts"
+  ]
+}

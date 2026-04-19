@@ -1,0 +1,23 @@
+[package]
+name = "lovable-timer"
+version = "1.0.0"
+description = "Lovable-themed floating countdown timer"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2.5", features = [] }
+
+[dependencies]
+tauri = { version = "2.5", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
+# Defense-in-depth for tao#1178: bare `.unwrap()` in CursorIgnoreEvents
+# handler panics when the GdkWindow isn't realized yet. The fork below
+# replaces it with a safe `if let Some(...)` check. Remove this patch
+# once tao ships PR #1204 on crates.io.
+[patch.crates-io]
+tao = { git = "https://github.com/JGSimi/tao", branch = "fix-cursor-ignore-unwrap" }
