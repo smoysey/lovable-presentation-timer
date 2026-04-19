@@ -88,6 +88,20 @@ const Index = () => {
     }).then((fn) => unlisteners.push(fn));
     void listen(HEART_INLINE_HIDE_EVENT, () => {
       setInlineHeart(null);
+      // webkit2gtk-4.1 (Linux) leaves a compositor "ghost" of the heart
+      // around the transparent mini-timer window after the animation ends.
+      // Force a repaint by toggling a no-op transform on the root element
+      // so the compositor surface is fully invalidated. Cheap and harmless
+      // on other platforms.
+      if (typeof window !== "undefined" && /Linux/i.test(window.navigator.userAgent)) {
+        const root = document.documentElement;
+        root.style.transform = "translateZ(0)";
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            root.style.transform = "";
+          });
+        });
+      }
     }).then((fn) => unlisteners.push(fn));
     return () => {
       unlisteners.forEach((fn) => fn());
