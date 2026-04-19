@@ -6,6 +6,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version tag (must start with v), e.g. v1.2.3"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -36,6 +41,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -65,13 +72,37 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build Tauri app
-        if: startsWith(github.ref, 'refs/tags/v')
+      # For manual runs, create/push the tag so the release has a real tag behind it.
+      - name: Create and push tag (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.version }}"
+          if [[ ! "$VERSION" =~ ^v ]]; then
+            echo "Version must start with 'v' (example: v1.2.3). Got: $VERSION"
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # fail if tag already exists remotely
+          if git ls-remote --tags origin "$VERSION" | grep -q "$VERSION"; then
+            echo "Tag already exists on origin: $VERSION"
+            exit 1
+          fi
+
+          git tag "$VERSION"
+          git push origin "$VERSION"
+
+      - name: Build Tauri app + create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: "Lovable Timer ${{ github.ref_name }}"
+          tagName: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
+          releaseName: "Lovable Timer ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}"
           releaseDraft: false
           prerelease: false
