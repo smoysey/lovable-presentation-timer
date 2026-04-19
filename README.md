@@ -1,6 +1,6 @@
 # Lovable Timer
 
-A small, always-on-top countdown timer for presentations. Built with Tauri, React, Vite, and Tailwind.
+A small, always-on-top countdown timer for Lovable presentations. Built with Tauri, React, Vite, and Tailwind.
 
 ## Features
 
